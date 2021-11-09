@@ -1,0 +1,379 @@
+from tkinter import*
+from tkinter import  messagebox
+from PIL import Image, ImageTk
+import requests
+import webbrowser
+from math import*
+import pyglet
+
+
+##MADE BY CYPRIEN DUROY, ARTHUR LECOMTE, BAPTISTE DUDONNE TG3 ALBERT SOREL
+
+class Carbon_Calculator:
+
+    def __init__(self):
+        self.window = Tk()
+        self.window.title("Carbon Footsprint Calculator")
+        self.window.geometry("875x650")
+        self.window.minsize(850, 650)
+        self.window.config(background='#41B77F')
+        self.valeur_buttton=IntVar()#valeur des btns pour le mode de transport; entier
+        self.carb_trans=0 #bilan total du transport
+        self.km=0 #nbr km
+        self.nb=""#le nombre de personnes
+        self.tree=0
+        self.Destination=""
+        self.Current=""
+        self.nbr_etape=0 #nbr d'étape demandé
+        self.etape=0 #nbr d'étape réalisé
+        self.window.iconbitmap("images/trees.ico")
+        pyglet.font.add_file('fonts/OpenSans.ttf')
+
+        """////////////////Images///////////"""
+        #home (back to menue)
+        home= (Image.open("images/home.png"))
+        resized_home= home.resize((160,140), Image.ANTIALIAS)
+        self.new_home= ImageTk.PhotoImage(resized_home)
+        #train image
+        train= (Image.open("images/train.png"))
+        resized_train= train.resize((160,140), Image.ANTIALIAS)
+        self.new_train= ImageTk.PhotoImage(resized_train)
+        #bus image
+        bus= (Image.open("images/bus.png"))
+        resized_bus= bus.resize((160,140), Image.ANTIALIAS)
+        self.new_bus= ImageTk.PhotoImage(resized_bus)
+        #plane image
+        plane= (Image.open("images/plane.png"))
+        resized_plane= plane.resize((160,140), Image.ANTIALIAS)
+        self.new_plane= ImageTk.PhotoImage(resized_plane)
+
+        self.frame = Frame(self.window,bg='#41B77F')# initialization et couleur de fond
+        self.create_fully_window()# creation des composants
+        #self.frame.pack(expand=YES)# empaquetage
+
+
+
+    def source(self):
+        url="https://github.com/Baltazouu/Projet-JO"
+        webbrowser.open_new_tab(url)
+
+    def create_fully_window(self):
+        
+        self.frame.pack(expand=YES)#now we create the Window
+        label_title = Label(self.frame, text="Carbon Footsprint Calculator\n",
+         font=("Open Sans SemiBold", 28), bg='#41B77F', fg='white')
+        label_title.pack()
+        label_subtitle = Label(self.frame, text="Made By NSI Terminal  \n", #create_subtitle :
+        font=("Courrier", 20), bg='#41B77F', fg='white')
+        label_subtitle.pack(side=TOP)
+
+        normandie= (Image.open("images/normandie.png"))
+        resized_normandie= normandie.resize((200,85), Image.ANTIALIAS)
+        self.new_normandie= ImageTk.PhotoImage(resized_normandie)
+        logo_normandie=Label(self.frame,image=self.new_normandie,bg='#41B77F')
+
+        paris2024= (Image.open("images/paris2024.png"))
+        resized_paris= paris2024.resize((200,160), Image.ANTIALIAS)
+        self.new_paris= ImageTk.PhotoImage(resized_paris)
+        logo_paris=Label(self.frame,image=self.new_paris,bg='#41B77F')
+
+        unss= (Image.open("images/unss.png"))
+        resized_unss= unss.resize((110,60), Image.ANTIALIAS)
+        self.new_unss= ImageTk.PhotoImage(resized_unss)
+        logo_unss=Label(self.frame,image=self.new_unss,bg='#41B77F')
+
+        source_btn = Button(self.frame,text='Source Code', command=self.source,width=10, font=("Open Sans SemiBold", 12), bg='white', fg='#41B77F')
+
+        calc_button = Button(self.frame, text="Calculate Now !", font=("Open Sans SemiBold", 26), bg='white', fg='#41B77F',#create_calculate_button
+        command=lambda:[label_subtitle.pack_forget(),label_title.pack_forget(),calc_button.pack_forget(),self.people_nbr(),logo_paris.pack_forget(),logo_normandie.pack_forget(),logo_unss.pack_forget(),source_btn.pack_forget()])#,self.back.pack()
+
+        calc_button.pack()
+        logo_normandie.pack(side=LEFT)
+        logo_unss.pack(side=RIGHT,padx=30,pady=10)
+        logo_paris.pack(side=BOTTOM,padx=30,pady=10)
+        source_btn.pack(side=BOTTOM,padx=30,pady=10)
+
+
+    """///////////////////////////////////////////////// Number Of Peoples ://////////////////////////////////////////////////////////////////////:"""
+
+    def people_nbr(self):
+        home= (Image.open("images/home.png"))
+        resized_home= home.resize((60,60), Image.ANTIALIAS)
+        new_home= ImageTk.PhotoImage(resized_home)
+        """
+        back=Button(self.frame,image=new_home)
+        back =Button(self.frame,image=new_home,bg='#41B77F', fg='#41B77F')
+        """
+
+        label_subtitle = Label(self.frame, text="How Many People Are You ?\n\n", font=("Courrier", 26), bg='#41B77F',fg='white')
+        #Pour actualiser L'entrée et la voir en direct
+        def update_label(*args):
+            var_retour.set(var_entry.get())
+            self.nb=var_entry.get()
+
+        def verify():
+            if var_entry.get() > 0 :
+                label_subtitle.pack_forget(),entry.pack_forget(),label_space.pack_forget(),confirm_btn.pack_forget(),self.number_methods()
+            else :
+                messagebox.showwarning("ERROR","Please Type A Number !")
+
+        var_entry=IntVar(value="")
+        var_entry.trace("w",update_label)
+        entry=Entry(self.frame, textvariable=var_entry,bg="#eeeeee",border=0,borderwidth=0,font=("Courrier", 22))
+        var_retour=IntVar()
+        label_space=Label(self.frame,textvariable=var_retour,font=("Courrier", 20), bg='#41B77F',fg='white')
+        #retour = Label(self.frame,textvariable=var_retour,font=("Courrier", 20), bg='#41B77F',fg='white')
+        confirm_btn = Button(self.frame, text="Confirm", font=("Courrier", 25), bg='white', fg='#41B77F',command=verify)
+        #empaquetage
+
+
+        #back.pack()
+        label_subtitle.pack()
+        entry.pack()
+        label_space.pack()
+        confirm_btn.pack()
+
+    """////////////////////////////////////////////////////////////////// USE SEVERAL METHODS OF TRANSPORT ?////////////////////////////////////////////////////////"""
+
+    def number_methods(self):
+            label_subtitle = Label(self.frame, text="Did You Use Several Methods Of Transport ?\n\n", font=("Courrier", 26), bg='#41B77F',fg='white')
+            btn_1 =Button(self.frame,text="YES",width=10,font=("Courrier", 18),bg='#41B77F', fg='white', command = lambda :[self.cbm_trans(),forget()])
+            btn_2 = Button(self.frame, text="NO",width=10, font=("Courrier", 18), bg='#41B77F', fg='white',command=lambda:[self.start_location(),forget()])
+
+            def forget():#to remove the widget
+                label_subtitle.pack_forget(),btn_1.pack_forget(),btn_2.pack_forget()
+
+
+            label_subtitle.pack()
+            btn_2.pack(side=BOTTOM,padx=30,pady=10)
+            btn_1.pack(side=BOTTOM,padx=30,pady=10)
+
+
+    """/////////////////////////////////////////////////////////////////how many times change you methods of transport////////////////////////////////////////////////////////////////////////"""
+    def cbm_trans(self):
+        label_subtitle = Label(self.frame, text="How many transports do you use ? \n\n", font=("Courrier", 26), bg='#41B77F',fg='white')
+        def verify():
+            if var_entry.get() > 1 :
+                self.nbr_etape = var_entry.get()-1
+                label_subtitle.pack_forget(),entry.pack_forget(),label_space.pack_forget(),confirm_btn.pack_forget()
+                self.start_location()
+            else :
+                messagebox.showwarning("ERROR","Please Type A Number higher than 1 !")
+
+        var_entry=IntVar(value="")
+        entry=Entry(self.frame, textvariable=var_entry,bg="#eeeeee",border=0,borderwidth=0,font=("Courrier", 22))
+        label_space=Label(self.frame,text="\n",bg='#41B77F')
+        confirm_btn = Button(self.frame, text="Confirm", font=("Courrier", 25), bg='white', fg='#41B77F',command=verify)
+
+        label_subtitle.pack()
+        entry.pack()
+        label_space.pack()
+        confirm_btn.pack()
+
+
+
+    """/////////////////////////////////////////////////////////////////////////////////////// ENTER DESTINATION AND START LOCATION ////////////////////////////////////////////////////////////////////////////////////"""
+
+    def start_location(self):
+
+        def verify_current():#in order to verify that an entry has been made
+
+            if current_entry.get()!="":
+                self.Current=current_entry.get()
+                if self.nbr_etape==self.etape :
+                    self.destination_location()
+                elif self.nbr_etape>self.etape:
+                    self.step_location()
+
+
+        def forget():
+            label_start.pack_forget(),current.pack_forget(),btn_confirm.pack_forget(),space.pack_forget()
+
+
+        label_start=Label(self.frame, text="Enter Your Start Location :\n", font=("Courrier", 26), bg='#41B77F',fg='white')
+
+        current_entry=StringVar()
+        current=Entry(self.frame,textvariable=current_entry,bg="#eeeeee",border=0,borderwidth=0,font=("Courrier", 20))
+
+        self.label_current=Label
+        space=Label(self.frame,text="\n",bg='#41B77F')
+        btn_confirm= Button(self.frame, text="Confirm Your Start City", font=("Courrier", 20), bg='white', fg='#41B77F',command = lambda :[verify_current(),forget()])
+
+        label_start.pack()
+        current.pack()
+        space.pack()
+        btn_confirm.pack()
+
+
+    def step_location(self):
+
+        if self.etape>=1:
+            self.Current=self.Destination
+        self.etape=self.etape+1
+        def verify_step():#in order to verify that an entry has been made
+
+                if step_entry.get()!="":
+                    self.Destination=step_entry.get()
+                    self.API()
+
+        def forget():
+                label_step.pack_forget(),step.pack_forget(),btn_confirm.pack_forget(),space.pack_forget(),self.label_current.pack_forget()
+
+        label_step=Label(self.frame, text=f"Enter your {self.etape} Step Location : \n", font=("Courrier", 26), bg='#41B77F',fg='white')
+
+        step_entry=StringVar()
+        step=Entry(self.frame,textvariable=step_entry,bg="#eeeeee",border=0,borderwidth=0,font=("Courrier", 20))
+
+        self.label_current=Label
+        space=Label(self.frame,text="\n",bg='#41B77F')
+        btn_confirm= Button(self.frame, text="Confirm Your Step City", font=("Courrier", 20), bg='white', fg='#41B77F',command = lambda :[verify_step(),forget()])
+
+        label_step.pack()
+        step.pack()
+        space.pack()
+        btn_confirm.pack()
+
+
+    def destination_location(self):
+        if self.etape>=1:
+            self.Current=self.Destination
+        self.etape=self.etape+1
+        def city():#To Define the Destination City
+
+            if self.valeur_buttton.get()==1:
+                self.Destination="Caen"#Pont-l'évèque(49.282793557255886, 0.18484314531409504)
+                label_destination.pack_forget(),radio1.pack_forget(),
+                radio2.pack_forget(),radio3.pack_forget(),radio4.pack_forget(), self.label_current.pack_forget()
+                self.API()
+            elif self.valeur_buttton.get()==2:
+                self.Destination="Deauville"
+                label_destination.pack_forget(),radio1.pack_forget(),
+                radio2.pack_forget(),radio3.pack_forget(),radio4.pack_forget(), self.label_current.pack_forget()
+                self.API()
+            elif self.valeur_buttton.get()==3:
+                self.Destination="Le Havre"
+                label_destination.pack_forget(),radio1.pack_forget(),
+                radio2.pack_forget(),radio3.pack_forget(),radio4.pack_forget(), self.label_current.pack_forget()
+                self.API()
+            elif self.valeur_buttton.get()==4:
+                self.Destination="Rouen"
+                label_destination.pack_forget(),radio1.pack_forget(),
+                radio2.pack_forget(),radio3.pack_forget(),radio4.pack_forget(), self.label_current.pack_forget()
+                self.API()
+        label_destination=Label(self.frame,text="\nEnter Your City Destination:\n", font=("Courrier", 26), bg='#41B77F',fg='white')
+
+        self.valeur_buttton=IntVar()
+        radio1 = Radiobutton(self.frame, text="Caen      ",command=city ,value=1,variable=self.valeur_buttton,bg='#41B77F', font=("Courrier", 18),borderwidth=0,highlightthickness=0)
+        radio2= Radiobutton(self.frame, text="Deauville",command=city,  value=2,variable=self.valeur_buttton,bg='#41B77F', font=("Courrier", 18),borderwidth=0,highlightthickness=0)
+        radio3=Radiobutton(self.frame, text="Le Havre",command=city , value=3,variable=self.valeur_buttton,bg='#41B77F', font=("Courrier", 18),borderwidth=0,highlightthickness=0)
+        radio4=Radiobutton(self.frame, text="Rouen    ", command=city, value=4,variable=self.valeur_buttton,bg='#41B77F', font=("Courrier", 18),borderwidth=0,highlightthickness=0)
+
+        self.label_current=Label(self.frame,text=f'Your Travel Start From {self.Current}',font=("Courrier", 20), bg='#41B77F',fg='white')
+        self.label_current.pack()
+        label_destination.pack()
+        radio1.pack()
+        radio2.pack()
+        radio3.pack()
+        radio4.pack()
+
+    """/////////////////////////////////////////////////////////////////////API WINDOW///////////////////////////////////////////////////////////////////////////////////////////"""
+
+    def API(self):#to send te request
+
+        stop="stops="+self.Destination+"|"+self.Current
+        url="https://www.distance24.org/route.json?"+stop
+        r = requests.get(url)
+        rep=r.json()
+        self.km=rep['distance']
+        self.label_current = Label(self.frame, text=f"The Distance Between {self.Current} and {self.Destination} is of {self.km} Kilometers", font=("Courrier", 20), bg='#41B77F', fg='white')
+        self.label_current.pack()
+        self.method_transport()
+
+    """//////////////////////////////////////////////////////////////////////////////// Méthod of transport ////////////////////////////////////////////////////////////////////////////////////"""
+
+    def method_transport(self):#in order to know the method of transport you will use
+            label_title = Label(self.frame, text=" \nPlease Choose Your Method Of Transport:\n  ",font=("Courrier", 20), bg='#41B77F', fg='white')
+
+            btn_1 =Button(self.frame,image=self.new_train,font=("Courrier", 18),bg='#41B77F', fg='#41B77F',command=lambda:[self.bilan_trans_train(),forget()])
+
+            btn_2 = Button(self.frame, image=self.new_bus, font=("Courrier", 18), bg='#41B77F', fg='#41B77F',command=lambda:[self.bilan_trans_bus(),forget()])
+
+            btn_3 = Button(self.frame, image=self.new_plane, font=("Courrier", 18), bg='#41B77F', fg='#41B77F',command=lambda:[self.bilan_trans_plane(),forget()])
+
+            def forget():#to remove the widget
+                label_title.pack_forget(),btn_1.pack_forget(),btn_2.pack_forget(),btn_3.pack_forget(), self.label_current.pack_forget()
+            label_title.pack()
+            btn_1.pack(side=LEFT,padx=30,pady=10)
+            btn_2.pack(side=RIGHT,padx=30,pady=10)
+            btn_3.pack(side=BOTTOM,padx=30,pady=10)
+
+
+    """///////////////////////////////////////////////////////////////////////////////////Calculate Carbon Footsprint///////////////////////////////////////////////////////////////////////////////"""
+
+    def bilan_trans_train(self): # for train
+
+        carb=self.nb*self.km*0.000016
+        self.carb_trans=self.carb_trans+carb
+        self.carb_trans=round(self.carb_trans,2)
+        if self.nbr_etape==self.etape :
+            self.destination_location()
+        elif self.nbr_etape>self.etape :
+            self.step_location()
+        else :
+            self.reveal()
+
+
+    def bilan_trans_bus(self):#for bus-
+        carb=self.nb*self.km*0.000068
+        self.carb_trans=self.carb_trans+carb
+        self.carb_trans=round(self.carb_trans,2)
+        if self.nbr_etape==self.etape :
+            self.destination_location()
+        elif self.nbr_etape>self.etape :
+            self.step_location()
+        else :
+            self.reveal()
+
+
+    def bilan_trans_plane(self):#for plane
+        print(self.etape)
+        print(self.nbr_etape)
+        carb_plane=self.nb*self.km*0.000187
+        self.carb_trans=self.carb_trans+carb_plane
+        self.carb_trans=round(self.carb_trans,2)
+        if self.nbr_etape==self.etape :
+            self.destination_location()
+        elif self.nbr_etape>self.etape :
+            self.step_location()
+        else :
+            self.reveal()
+
+
+    """/////////////////////////////////////////////////////////////////////////////////////REVEAL//////////////////////////////////////////////////////////////////////////////"""
+
+
+
+    def final_background(self):
+        tree= (Image.open("images/tree.png"))
+        resized_tree= tree.resize((160,120), Image.ANTIALIAS)
+        self.new_tree= ImageTk.PhotoImage(resized_tree)
+        tree=Label(self.frame,image=self.new_tree,bg='#41B77F')
+        tree.pack(side=BOTTOM)
+
+    def reveal(self):
+        self.tree=self.carb_trans /2.5
+        self.tree=ceil(self.tree)
+        self.tree=int(self.tree)
+        if self.tree>1:
+            self.final_background()
+            tree="Trees"
+        else:
+            tree="Tree"
+            self.final_background()
+        label_subtitle = Label(self.frame, text=f"Your carbon footsprint is {self.carb_trans}  Ton of CO2\n\nFor This Travel You Should to replant {self.tree} {tree}\n", font=("Courrier", 26), bg='#41B77F',fg='white')
+        label_subtitle.pack()
+
+
+
+frame = Carbon_Calculator()
+frame.window.mainloop()
