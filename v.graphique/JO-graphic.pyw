@@ -54,7 +54,7 @@ class Carbon_Calculator:
 
 
     def source(self):
-        url="https://github.com/Baltazouu/Projet-JO"
+        url="https://github.com/Baltazouu/Projet_JO"
         webbrowser.open_new_tab(url)
 
     def create_fully_window(self):
