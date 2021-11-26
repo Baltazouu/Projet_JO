@@ -1,4 +1,7 @@
 # coding=utf-8>
+"""
+This is a terminal command line version without any graphical window
+"""
 import json
 import requests
 from math import*
