@@ -6,4 +6,5 @@ You Need To Have Theses Python PIP Modules Installed :
 - Pyglet (pip install pyglet)
 - Requests (pip install requests)
 
-Made By Duroy Cyprien, Dudonné Baptiste and Lecomte Arthur From Lycée Albert Sorel
+Made By Duroy Cyprien, Dudonné Baptiste and Lecomte Arthur (@LovisL) From Lycée Albert Sorel
+
