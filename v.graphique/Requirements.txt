@@ -1,7 +1,12 @@
 Goal : Made a Carbon Footsprint Calculator in order to raise awareness against global warming
 
-Requirements : You Need To Have Theses Python PIP Modules Installed :
+Requirements if you are using the python version : You Need To Have Theses Python PIP Modules Installed :
+PILLOW
+Pyglet
+Requests
 
-PILLOW (pip install pillow)
-Pyglet (pip install pyglet)
-Requests (pip install requests)
+Type theses commands in cmd :
+
+pip install pillow
+pip install pyglet
+pip install requests
